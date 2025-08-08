@@ -2,9 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - release # 只監聽 release 分支的推送
+    tags:
+      - 'v*' # 只監聽 v tag 的推送
 
 jobs:
   frontend:
@@ -28,7 +27,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v3 # 採用別人提供的action
         with:
           github_token: ${{ secrets.GH_PAT }}
           publish_dir: ./build
