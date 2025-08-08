@@ -45,6 +45,7 @@ PostgreSQL 資料庫
 
 ### 資料庫
 
+- Supabase
 - PostgreSQL，包含 PostGIS 地理空間擴充
 - 存放景點資料、主題分類、管理者帳號等資料表
 - 可透過 SQL 腳本或 ORM Migration 管理資料結構
@@ -89,10 +90,6 @@ PostgreSQL 資料庫
 │ └── README.md
 ├── docs/ # 專案相關文件
 └── README.md # 總說明文件
-
-yaml
-複製
-編輯
 
 ---
 
