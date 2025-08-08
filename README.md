@@ -38,10 +38,11 @@ PostgreSQL 資料庫
 
 - 使用 Node.js + NestJS 建立 RESTful API
 - API 文件使用 Swagger (OpenAPI 3.0) 撰寫並自動產生，並支援多語系（i18n）
-- 提供景點資料 CRUD、主題搜尋、使用者身份驗證（限少數管理者新增商家）
+- 提供景點資料 CRUD、主題搜尋、JWT使用者身份驗證（限少數管理者新增商家）
 - 連接 PostgreSQL 資料庫，使用 Prisma
 - 部署於 Render，並使用 GitHub Actions 進行 CI/CD 自動部署
 - 設定 CORS，允許前端域名存取 API
+- RBAC控制權限
 
 ### 資料庫
 
