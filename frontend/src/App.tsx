@@ -1,5 +1,5 @@
 import React from "react"
-import ReactLogo from "./ReactLogo.tsx"
+import ReactLogo from "./ReactLogo"
 import "./App.css"
 import { useTranslation } from "react-i18next"
 
