@@ -1,20 +1,22 @@
-import logo from "./logo.svg"
+import React from "react"
+import ReactLogo from "./ReactLogo.tsx"
 import "./App.css"
 import { useTranslation } from "react-i18next"
 
 function App() {
 	const { t, i18n } = useTranslation()
 
-	const changeLanguage = (lng) => {
+	// 加上參數類型：語言代碼是 string
+	const changeLanguage = (lng: string): void => {
 		i18n.changeLanguage(lng)
 	}
 
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
+				<ReactLogo />
 				<p>
-					Edit <code>src/App.js</code> and save to reload.
+					Edit <code>src/App.tsx</code> and save to reload.
 				</p>
 				<a
 					className="App-link"
