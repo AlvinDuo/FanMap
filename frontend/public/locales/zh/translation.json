@@ -1,3 +1,11 @@
 {
-	"welcome": "歡迎使用追星用景點地圖"
+  "welcome": "歡迎使用 React",
+  "home": "首頁",
+  "dashboard": "儀表板",
+  "user_management": "使用者管理",
+  "site_management": "景點管理",
+  "site_submission": "景點提交",
+  "role_permission": "角色與權限",
+  "activity_log": "活動日誌",
+  "settings": "設定"
 }

@@ -7,9 +7,11 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/fanmap
-      - JWT_SECRET=05605a5217e2901653e50d48b55ed43c4d5671ab44957657a6902779f61c9383
+      - JWT_SECRET=...
     depends_on:
       - db
+    networks:
+      - fanmap-network
 
   frontend:
     build:
@@ -17,16 +19,22 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8001:8001"
+    networks:
+      - fanmap-network
 
   db:
     image: postgres:17-alpine
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: fanmap
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - fanmap-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -38,7 +46,13 @@ services:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - fanmap-network
 
 volumes:
   pgdata:
   pgadmin_data:
+
+networks:
+  fanmap-network:
+    driver: bridge

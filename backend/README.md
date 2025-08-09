@@ -1,98 +1,214 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Site Management Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based backend API for managing tourist sites and submissions with role-based access control.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Authentication & Authorization**: JWT-based authentication with role-based access control (USER/ADMIN)
+- **Site Management**: CRUD operations for tourist sites with approval workflow
+- **Submission System**: Users can submit new sites for admin approval
+- **Dashboard**: Admin dashboard with statistics and recent activity
+- **API Documentation**: Swagger/OpenAPI documentation
+- **Database**: PostgreSQL with Prisma ORM
+- **Validation**: Request validation with class-validator
+- **Error Handling**: Global exception filter with structured error responses
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack
 
-## Project setup
+- **Framework**: NestJS (Node.js + TypeScript)
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT with Passport.js
+- **Validation**: class-validator & class-transformer
+- **Documentation**: Swagger/OpenAPI
+- **Testing**: Jest
 
+## API Endpoints
+
+### Authentication
+- `POST /auth/login` - User login
+- `POST /auth/register` - User registration
+
+### Users (Admin only)
+- `GET /users` - Get all users
+- `GET /users/:id` - Get user by ID
+- `POST /users` - Create user
+- `PATCH /users/:id` - Update user
+- `DELETE /users/:id` - Delete user
+
+### Sites
+- `GET /sites` - Get approved sites (public)
+- `GET /sites/all` - Get all sites with status filter (admin)
+- `GET /sites/:id` - Get site by ID
+- `POST /sites` - Create site (user)
+- `PATCH /sites/:id` - Update site (owner/admin)
+- `PATCH /sites/:id/status` - Update site status (admin)
+- `DELETE /sites/:id` - Delete site (owner/admin)
+
+### Submissions
+- `GET /submissions` - Get all submissions (admin)
+- `GET /submissions/pending` - Get pending submissions (admin)
+- `GET /submissions/my` - Get user's submissions
+- `GET /submissions/:id` - Get submission by ID
+- `POST /submissions` - Create submission (user)
+- `PATCH /submissions/:id` - Review submission (admin)
+- `DELETE /submissions/:id` - Delete submission (owner/admin)
+
+### Dashboard (Admin only)
+- `GET /dashboard/stats` - Get statistics
+- `GET /dashboard/activity` - Get recent activity
+
+### Health
+- `GET /` - Health check
+- `GET /health` - Health status
+
+## Setup
+
+### Prerequisites
+- Node.js (v18 or higher)
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
-
+3. Set up environment variables:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Edit `.env` with your configuration:
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/site_management?schema=public"
+JWT_SECRET="your-super-secret-jwt-key"
+JWT_EXPIRES_IN="1h"
+PORT=3000
+NODE_ENV="development"
+CORS_ORIGIN="http://localhost:3000,https://yourdomain.github.io"
+```
+
+4. Set up the database:
+```bash
+# Generate Prisma client
+npm run prisma:generate
+
+# Run database migrations
+npm run prisma:migrate
+```
+
+5. Start the development server:
+```bash
+npm run start:dev
+```
+
+The API will be available at `http://localhost:3000`
+Swagger documentation will be available at `http://localhost:3000/api`
+
+## Database Schema
+
+### User
+- `id`: Primary key
+- `email`: Unique email address
+- `password`: Hashed password
+- `role`: USER or ADMIN
+- `createdAt`, `updatedAt`: Timestamps
+
+### Site
+- `id`: Primary key
+- `name`: Site name
+- `description`: Site description
+- `location`: GeoJSON location data
+- `status`: PENDING, APPROVED, or REJECTED
+- `createdById`: Foreign key to User
+- `createdAt`, `updatedAt`: Timestamps
+
+### Submission
+- `id`: Primary key
+- `siteData`: JSON data for the submitted site
+- `status`: PENDING, APPROVED, or REJECTED
+- `submittedById`: Foreign key to User (submitter)
+- `reviewedById`: Foreign key to User (reviewer)
+- `reviewedAt`: Review timestamp
+- `createdAt`: Submission timestamp
+
+## Scripts
+
+- `npm run start` - Start production server
+- `npm run start:dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:cov` - Run tests with coverage
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:studio` - Open Prisma Studio
+
+## API Response Format
+
+All API responses follow a consistent format:
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "errorCode": "ERROR_CODE",
+  "message": "Error description",
+  "stack": "Error stack trace (development only)"
+}
+```
+
+## Authentication
+
+The API uses JWT tokens for authentication. Include the token in the Authorization header:
+
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+## Role-Based Access Control
+
+- **USER**: Can create sites, submit for approval, view own submissions
+- **ADMIN**: Full access to all endpoints, can review submissions, manage users
+
+## Testing
+
+Run the test suite:
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# Test coverage
+npm run test:cov
 
-# test coverage
-$ npm run test:cov
+# E2E tests
+npm run test:e2e
 ```
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+The application is configured for deployment on Render or similar platforms. Make sure to:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. Set environment variables in your deployment platform
+2. Run database migrations: `npm run prisma:deploy`
+3. Build the application: `npm run build`
+4. Start with: `npm run start:prod`
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the UNLICENSED license.

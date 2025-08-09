@@ -1,4 +1,11 @@
 {
-    "welcome": "Welcome to Fan Map"
-  }
-  
+  "welcome": "Welcome to React",
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "user_management": "User Management",
+  "site_management": "Site Management",
+  "site_submission": "Site Submission",
+  "role_permission": "Role & Permission",
+  "activity_log": "Activity Log",
+  "settings": "Settings"
+}

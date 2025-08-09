@@ -1,15 +1,76 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  password    String
+  role        Role     @default(USER)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  sites       Site[]       @relation("UserSites")
+  submissions Submission[]
+  reviewedSubmissions Submission[] @relation("ReviewedBy")
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Site {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  location    Json       // GeoJSON format
+  status      SiteStatus @default(PENDING)
+  createdById Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  // Relations
+  createdBy   User       @relation("UserSites", fields: [createdById], references: [id])
+
+  @@map("sites")
+}
+
+enum SiteStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Submission {
+  id           Int              @id @default(autoincrement())
+  siteData     Json             // 新增景點申請資料
+  status       SubmissionStatus @default(PENDING)
+  submittedById Int
+  reviewedById Int?
+  reviewedAt   DateTime?
+  createdAt    DateTime         @default(now())
+  
+  // Relations
+  submittedBy  User             @relation(fields: [submittedById], references: [id])
+  reviewedBy   User?            @relation("ReviewedBy", fields: [reviewedById], references: [id])
+
+  @@map("submissions")
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
